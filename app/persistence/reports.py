@@ -8,7 +8,7 @@ def parse_row(row) -> Report:
     return Report(row)
 
 
-def list_reports(from_report_id, limit):
+def list_reports(from_report_id: str, limit: int):
     if from_report_id == '':
         result = db_conn().execute('SELECT * FROM reports LIMIT ?',
                                    [limit]).fetchall()
@@ -24,7 +24,7 @@ def list_reports(from_report_id, limit):
     return reports
 
 
-def list_incident_reports(incident_id, limit) -> list[Report]:
+def list_incident_reports(incident_id: str, limit: int) -> list[Report]:
     result = db_conn().execute('SELECT * FROM reports WHERE incident_id  = ? LIMIT ?',
                                [incident_id, limit]).fetchall()
 
@@ -51,15 +51,15 @@ def create_report(report: Report):
     return get_report(report_id)
 
 
-def check_no_reports_for_incident(incident_id):
-    reports_in_incident = list_incident_reports(incident_id)
+def check_no_reports_for_incident(incident_id: str):
+    reports_in_incident = list_incident_reports(incident_id, 1)
     if len(reports_in_incident) > 0:
         return False
     else:
         return True
 
 
-def get_report(report_id) -> Report:
+def get_report(report_id: str) -> Report:
     result = db_conn().execute(
         'SELECT * FROM reports WHERE report_id = ?', [report_id]).fetchone()
     if result is None:

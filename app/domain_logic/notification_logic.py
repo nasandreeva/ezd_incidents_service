@@ -3,9 +3,14 @@ from datetime import *
 from app.data_structures.notification import Notification
 import app.persistence.notifications as notification_persistence
 
-def list_notifications_about_ends_of_incidents(incident_id, incident_name: str, resolved_notifications_count: int) -> list[Notification]:
-    return notification_persistence.list_notifications(incident_id, incident_name, resolved_notifications_count)
+def list_notifications(from_notification_id: str, limit: int):
+    return notification_persistence.list_notifications(from_notification_id, limit)
 
-def create_notification_about_end_of_incident(user_id: str, ended_at: datetime, incident_id, incident_name: str):
-    return notification_persistence.create_notification(incident_id, incident_name, user_id, ended_at)
-    
+def list_incident_notifications(incident_id: str, limit: int):
+    return notification_persistence.list_incident_notifications(incident_id, limit)
+
+def create_notification(notification: Notification) -> Notification:
+    return notification_persistence.create_notification(notification) 
+
+def get_notification(notification_id: str) -> Notification:
+    return notification_persistence.get_notification(notification_id)

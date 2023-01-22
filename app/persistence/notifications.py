@@ -9,7 +9,7 @@ def parse_row(row) -> Notification:
     return Notification(row)
 
 
-def list_notifications(from_notification_id, limit):
+def list_notifications(from_notification_id: str, limit:int):
     if from_notification_id == '':
         result = db_conn().execute('SELECT * FROM notifications LIMIT ?',
                                    [limit]).fetchall()
@@ -25,7 +25,7 @@ def list_notifications(from_notification_id, limit):
     return notifications
 
 
-def list_incident_notifications(incident_id, limit):
+def list_incident_notifications(incident_id: str, limit: int):
     result = db_conn().execute('SELECT * FROM notifications WHERE incident_id  = ? LIMIT ?',
                                [incident_id, limit]).fetchall()
 
@@ -50,7 +50,7 @@ def create_notification(notification: Notification) -> Notification:
     return get_notification(notification_id)
 
 
-def get_notification(notification_id) -> Notification:
+def get_notification(notification_id: str) -> Notification:
     result = db_conn().execute(
         'SELECT * FROM notifications WHERE notification_id = ?', [notification_id]).fetchone()
     return parse_row(result)
