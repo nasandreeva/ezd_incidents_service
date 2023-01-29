@@ -20,11 +20,6 @@ def get_incident(incident_id: str) -> Incident:
 def register_incident(attrs: dict) -> Incident:
     return incident_logic.create_incident(Incident(attrs))
 
-# Draft for API:
-# Incident(dict([('incident_name', incident_name),
-#                                                          ('user_id', user_id),
-#                                                          ('started_at', started_at)]))
-
 
 def report_incident_confirmed(incident_id: str, user_id: str) -> Incident:
     report = report_logic.create_report(
