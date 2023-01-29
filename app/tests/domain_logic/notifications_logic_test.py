@@ -2,7 +2,7 @@
 from datetime import *
 import app.domain_logic.notification_logic as notification_logic
 import uuid
-import app.tests.fixture.logic.notifications_logic_test_fixture as notifications_logic_test_fixture
+import app.tests.fixture.domain_logic.notifications_logic_test_fixture as notifications_logic_test_fixture
 
 
 def create_sample_notification():

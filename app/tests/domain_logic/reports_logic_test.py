@@ -3,7 +3,7 @@ from datetime import *
 from app.data_structures.report import Report
 import app.domain_logic.report_logic as report_logic
 import uuid
-import app.tests.fixture.logic.reports_logic_test_fixture as reports_logic_test_fixture
+import app.tests.fixture.domain_logic.reports_logic_test_fixture as reports_logic_test_fixture
 
  
 def parse_row():

@@ -1,7 +1,7 @@
 
 from datetime import *
 import app.domain_logic.incident_logic as incidents_logic
-import app.tests.fixture.logic.incidents_logic_test_fixture as incidents_logic_test_fixture
+import app.tests.fixture.domain_logic.incidents_logic_test_fixture as incidents_logic_test_fixture
 
 
 def parse_row():
