@@ -1,4 +1,5 @@
 from datetime import *
+import json
 
 from app.core.base_class import BaseClass
 
@@ -18,3 +19,7 @@ class Report(BaseClass):
         self.init_attribute_from(attrs, 'user_id', None)
         self.init_attribute_from(attrs, 'at', None)
         self.init_attribute_from(attrs, 'confirmed', None)
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)

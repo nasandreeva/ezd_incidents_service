@@ -5,7 +5,7 @@ from app.data_structures.notification import Notification
 from app.data_structures.report import Report
 
 
-def list_incidents(cursor_value: int, limit: str = '10') -> list[Incident]:
+def list_incidents(cursor_value: str, limit: str = '10') -> list[Incident]:
     return app_logic.list_incidents(cursor_value, int(limit))
 
 

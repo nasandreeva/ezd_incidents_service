@@ -6,7 +6,7 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-conn = sqlite3.connect('incident_service.db') 
+conn = sqlite3.connect('incident_service.db', check_same_thread=False) 
 conn.row_factory = dict_factory
 
 def db_conn():
