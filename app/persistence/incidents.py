@@ -10,7 +10,7 @@ def parse_row(row) -> Incident:
     return Incident(row)
 
 
-def list_incidents(from_incident_id, limit):
+def list_incidents(from_incident_id: str, limit: int):
     if from_incident_id == '':
         result = db_conn().execute('SELECT * FROM incidents LIMIT ?',
                                    [limit]).fetchall()
@@ -26,7 +26,7 @@ def list_incidents(from_incident_id, limit):
     return incidents
 
 
-def get_incident(incident_id) -> Incident:
+def get_incident(incident_id: str) -> Incident:
     result = db_conn().execute(
         'SELECT * FROM incidents WHERE incident_id = ?', [incident_id]).fetchone()
     return parse_row(result)
@@ -47,7 +47,7 @@ def create_incident(incident: Incident) -> Incident:
     return get_incident(incident_id)
 
 
-def update_incident(incident_id, attrs: dict):
+def update_incident(incident_id: str, attrs: dict):
     attrs_list = []
     for attr_name, attr_value in attrs.items():
         attrs_list.append(f'{attr_name} = \'{attr_value}\'')
@@ -59,16 +59,16 @@ def update_incident(incident_id, attrs: dict):
     return result
 
 
-def increment_positive_reports_count(incident_id):
+def increment_positive_reports_count(incident_id: str):
     return db_conn().execute(
         f'UPDATE incidents SET positive_reports_count = positive_reports_count + 1 WHERE incident_id = ?', [incident_id])
 
 
-def increment_negative_reports_count(incident_id):
+def increment_negative_reports_count(incident_id: str):
     return db_conn().execute(
         f'UPDATE incidents SET negative_reports_count = negative_reports_count + 1 WHERE incident_id = ?', [incident_id])
 
 
-def increment_resolved_notifications_count(incident_id):
+def increment_resolved_notifications_count(incident_id: str):
     return db_conn().execute(
         f'UPDATE incidents SET resolved_notifications_count = resolved_notifications_count + 1 WHERE incident_id = ?', [incident_id])
