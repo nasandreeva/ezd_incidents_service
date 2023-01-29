@@ -1,7 +1,7 @@
 
 from datetime import *
 import app.persistence.incidents as incidents_persistence
-import app.tests.fixture.incidents_persistence_test_fixture as incidents_persistence_test_fixture
+import app.tests.fixture.persistence.incidents_persistence_test_fixture as incidents_persistence_test_fixture
 
 
 def parse_row():

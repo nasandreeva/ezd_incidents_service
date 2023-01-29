@@ -3,7 +3,7 @@ from datetime import *
 from app.data_structures.report import Report
 import app.persistence.reports as reports_persistence
 import uuid
-import app.tests.fixture.reports_persistence_test_fixture as reports_persistence_test_fixture
+import app.tests.fixture.persistence.reports_persistence_test_fixture as reports_persistence_test_fixture
 
  
 def parse_row():

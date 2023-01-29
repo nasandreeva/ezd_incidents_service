@@ -2,7 +2,7 @@
 from datetime import *
 import app.persistence.notifications as notifications_persistence
 import uuid
-import app.tests.fixture.notifications_persistence_test_fixture as notifications_persistence_test_fixture
+import app.tests.fixture.persistence.notifications_persistence_test_fixture as notifications_persistence_test_fixture
 
 
 def create_sample_notification():
