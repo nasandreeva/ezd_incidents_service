@@ -3,6 +3,7 @@ from datetime import *
 
 from app.data_structures.incident import Incident
 from app.data_structures.notification import Notification
+from app.data_structures.report import Report
 import app.domain_logic.incident_logic as incident_logic
 import app.domain_logic.notification_logic as notification_logic
 import app.domain_logic.report_logic as report_logic
@@ -12,36 +13,70 @@ def list_incidents(cursor_value: int, limit: int = 10) -> list[Incident]:
     return incident_logic.list_incidents(cursor_value, limit)
 
 
-def get_incident_info(incident_id) -> Incident:
-    notifications = notification_logic.list_notifications_about_ends_of_incidents(incident_id)
-    reports = report_logic.list_reports(incident_id)
-    incident = incident_logic.get_info_about_incident(incident_id)
-    incident.notifications = notifications
-    return embed_notifications_into_incident(incident, notifications, reports)
-
-def embed_notifications_into_incident(incident: Incident, notifications_to_embed: list[Notification]):
-    incident.notifications = notifications_to_embed
-    return incident.notifications
-
-def register_incident(incident_name: str, user_id: str, started_at: datetime) -> Incident:
-    return incident_logic.create_incident(incident_name, user_id, started_at) 
+def get_incident_info(incident_id: str) -> Incident:
+    return incident_logic.get_incident(incident_id)
 
 
-def report_incident_confirmed(incident_id, user_id: str) -> Incident:
-    return report_logic.create_confirmation_report(incident_id, user_id)
+def register_incident(attrs: dict) -> Incident:
+    return incident_logic.create_incident(Incident(attrs))
+
+# Draft for API:
+# Incident(dict([('incident_name', incident_name),
+#                                                          ('user_id', user_id),
+#                                                          ('started_at', started_at)]))
 
 
-def report_incident_not_confirmed(incident_id, user_id: str) -> Incident:
-    return report_logic.create_not_confirmation_report(user_id, incident_id)
-    
+def report_incident_confirmed(incident_id: str, user_id: str) -> Incident:
+    report = report_logic.create_report(
+        dict([('incident_id', incident_id), ('user_id', user_id), ('confirmed', True)]))
+    incident_logic.increment_positive_reports_count(incident_id)
+    return incident_logic.get_incident(incident_id)
 
-def recall_incident(incident_id, user_id: str) -> Incident:
+
+def report_incident_not_confirmed(incident_id: str, user_id: str) -> Incident:
+    report = report_logic.create_report(
+        dict([('incident_id', incident_id), ('user_id', user_id), ('confirmed', False)]))
+    incident_logic.increment_negative_reports_count(incident_id)
+    return incident_logic.get_incident(incident_id)
+
+
+def recall_incident(incident_id: str, user_id: str) -> Incident:
     incident = incident_logic.get_incident(incident_id)
     if incident.positive_reports_count == 0 and incident.negative_reports_count == 0:
-        return incident_logic.mark_incident_as_recalled(incident_id, user_id)
+        incident_logic.mark_incident_as_recalled(incident_id, user_id)
+        return incident_logic.get_incident(incident_id)
     else:
         raise Exception("Incident can not be recalled")
 
 
-def notify_incident_resolved(incident_id, user_id: str) -> Incident:
-    return notification_logic.create_notification_about_end_of_incident(user_id, incident_id)
+def mark_incident_as_ended(incident_id: str, user_id: str) -> Incident:
+    incident = incident_logic.get_incident(incident_id)
+    incident_logic.mark_incident_as_ended(incident_id, user_id)
+    return incident_logic.get_incident(incident_id)
+
+
+def notify_incident_resolved(incident_id: str, user_id: str) -> Incident:
+    notification_logic.create_notification(Notification(
+        [('incident_id', incident_id), ('user_id', user_id)]))
+    incident_logic.increment_resolved_notifications_count(incident_id)
+    return incident_logic.get_incident(incident_id)
+
+
+def list_incident_reports(incident_id: str, limit: int) -> list[Report]:
+    return report_logic.list_incident_reports(incident_id, limit)
+
+
+def list_incident_notifications(incident_id: str, limit: int) -> list[Notification]:
+    return notification_logic.list_incident_notifications(incident_id, limit)
+
+#
+#  Administrative functions
+#
+
+
+def list_reports(from_report_id: str, limit: int):
+    return report_logic.list_reports(from_report_id, limit)
+
+
+def list_notifications(from_notification_id: str, limit: int):
+    return notification_logic.list_notifications(from_notification_id, limit)
