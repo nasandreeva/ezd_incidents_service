@@ -4,9 +4,7 @@ from app.data_structures.notification import Notification
 import app.domain_logic.notification_logic as notification_logic
 
 
-def list_incident_notifications(first_incident_id, second_incident_id):
-    first_incident_id = str(uuid.uuid4())
-    second_incident_id = str(uuid.uuid4())
+def do_list_incident_notifications(first_incident_id, second_incident_id):
 
     create_incident_notifications(first_incident_id, 5)
     create_incident_notifications(second_incident_id, 5)
@@ -14,10 +12,10 @@ def list_incident_notifications(first_incident_id, second_incident_id):
     return {'first_incident_id': first_incident_id, 'second_incident_id': second_incident_id}
 
 
-def list_incident_notifications_for_random_incidents():
+def list_incident_notifications():
     first_incident_id = str(uuid.uuid4())
     second_incident_id = str(uuid.uuid4())
-    return list_incident_notifications(first_incident_id, second_incident_id)
+    return do_list_incident_notifications(first_incident_id, second_incident_id)
 
 
 def create_incident_notifications(incident_id, quantity):
@@ -38,7 +36,7 @@ def get_notification():
 
 def list_notifications():
     create_incident_notifications(str(uuid.uuid4()), 10)
- 
+
 
 def create_notification():
     return Notification({'incident_id': str(uuid.uuid4()), 'user_id': 'user123', 'at': datetime.now()})

@@ -33,7 +33,7 @@ def list_incident_reports(incident_id: str, limit: int) -> list[Report]:
         reports.append(parse_row(row))
 
     return reports
- 
+
 
 def create_report(report: Report):
     report_id = str(uuid.uuid4())
@@ -43,7 +43,7 @@ def create_report(report: Report):
             report_id,
             report.incident_id,
             report.user_id,
-            report.at,
+            datetime.now(),
             report.confirmed
         ]
     )

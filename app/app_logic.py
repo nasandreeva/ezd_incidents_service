@@ -13,7 +13,7 @@ def list_incidents(cursor_value: int, limit: int = 10) -> list[Incident]:
     return incident_logic.list_incidents(cursor_value, limit)
 
 
-def get_incident_info(incident_id: str) -> Incident:
+def get_incident(incident_id: str) -> Incident:
     return incident_logic.get_incident(incident_id)
 
 
@@ -28,14 +28,14 @@ def register_incident(attrs: dict) -> Incident:
 
 def report_incident_confirmed(incident_id: str, user_id: str) -> Incident:
     report = report_logic.create_report(
-        dict([('incident_id', incident_id), ('user_id', user_id), ('confirmed', True)]))
+        Report(dict([('incident_id', incident_id), ('user_id', user_id), ('confirmed', True)])))
     incident_logic.increment_positive_reports_count(incident_id)
     return incident_logic.get_incident(incident_id)
 
 
 def report_incident_not_confirmed(incident_id: str, user_id: str) -> Incident:
     report = report_logic.create_report(
-        dict([('incident_id', incident_id), ('user_id', user_id), ('confirmed', False)]))
+        Report(dict([('incident_id', incident_id), ('user_id', user_id), ('confirmed', False)])))
     incident_logic.increment_negative_reports_count(incident_id)
     return incident_logic.get_incident(incident_id)
 
@@ -57,7 +57,7 @@ def mark_incident_as_ended(incident_id: str, user_id: str) -> Incident:
 
 def notify_incident_resolved(incident_id: str, user_id: str) -> Incident:
     notification_logic.create_notification(Notification(
-        [('incident_id', incident_id), ('user_id', user_id)]))
+        dict([('incident_id', incident_id), ('user_id', user_id)])))
     incident_logic.increment_resolved_notifications_count(incident_id)
     return incident_logic.get_incident(incident_id)
 

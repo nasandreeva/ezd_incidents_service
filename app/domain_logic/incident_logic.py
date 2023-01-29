@@ -21,7 +21,7 @@ def update_incident(incident_id: str, attrs):
 
 
 def mark_incident_as_recalled(incident_id: str, user_id: str) -> Incident:
-    incident = incident.get_incident(incident_id)
+    incident = get_incident(incident_id)
     if incident.user_id == user_id:
         return incident_persistence.update_incident(incident_id, {'recalled': True})
     else:
@@ -29,7 +29,7 @@ def mark_incident_as_recalled(incident_id: str, user_id: str) -> Incident:
 
 
 def mark_incident_as_ended(incident_id: str, user_id: str) -> Incident:
-    incident = incident.get_incident(incident_id)
+    incident = get_incident(incident_id)
     if incident.user_id == user_id:
         return incident_persistence.update_incident(incident_id, {'ended_at': datetime.now()})
     else:

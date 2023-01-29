@@ -44,7 +44,9 @@ def increment_negative_reports_count():
 
 
 def increment_resolved_notifications_count():
-    return create_sample_incident()
+    incident =  create_sample_incident()
+    attrs = dict([('resolved_notifications_count', 2)])
+    incident_logic.update_incident(incident.incident_id, attrs)
 
 
 def list_incidents():

@@ -2,7 +2,7 @@
 from datetime import *
 import app.domain_logic.notification_logic as notification_logic
 import uuid
-import app.tests.fixture.domain_logic.notifications_logic_test_fixture as notifications_logic_test_fixture
+import app.tests.fixture.domain_logic.notification_logic_test_fixture as notification_logic_test_fixture
 
 
 def create_sample_notification():
@@ -13,9 +13,9 @@ def create_sample_notification():
 def parse_row():
     assert True == False
 
- 
+
 def test_list_notifications():
-    notifications_logic_test_fixture.list_notifications()
+    notification_logic_test_fixture.list_notifications()
 
     notifications = notification_logic.list_notifications('', 10)
 
@@ -23,7 +23,7 @@ def test_list_notifications():
 
 
 def test_list_incident_notifications():
-    fixture = notifications_logic_test_fixture.list_incident_notifications_for_random_incidents()
+    fixture = notification_logic_test_fixture.list_incident_notifications()
 
     result = notification_logic.list_incident_notifications(
         fixture['first_incident_id'], 10)
@@ -32,7 +32,7 @@ def test_list_incident_notifications():
 
 
 def test_get_notification():
-    fixture = notifications_logic_test_fixture.get_notification()
+    fixture = notification_logic_test_fixture.get_notification()
 
     result = notification_logic.get_notification(
         fixture.notification_id)
@@ -41,7 +41,7 @@ def test_get_notification():
 
 
 def test_create_notification():
-    fixture = notifications_logic_test_fixture.create_notification()
+    fixture = notification_logic_test_fixture.create_notification()
 
     result = notification_logic.create_notification(fixture)
 

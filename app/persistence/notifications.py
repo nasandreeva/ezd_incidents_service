@@ -44,7 +44,7 @@ def create_notification(notification: Notification) -> Notification:
             notification_id,
             notification.incident_id,
             notification.user_id,
-            notification.at
+            datetime.now()
         ]
     )
     return get_notification(notification_id)
