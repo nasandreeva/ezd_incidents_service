@@ -13,12 +13,13 @@ class Report(BaseClass):
     sequence: int
 
     def __init__(self, attrs: dict):
-        self.init_attribute_from(attrs, 'incident_id', None)
-        self.init_attribute_from(attrs, 'sequence', None)
         self.init_attribute_from(attrs, 'report_id', None)
+        self.init_attribute_from(attrs, 'incident_id', None)
         self.init_attribute_from(attrs, 'user_id', None)
-        self.init_attribute_from(attrs, 'at', None)
         self.init_attribute_from(attrs, 'confirmed', None)
+        self.init_attribute_from(attrs, 'at', None)
+        self.init_attribute_from(attrs, 'sequence', None)        
+        
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__,

@@ -21,7 +21,7 @@ def list_notifications(from_notification_id: str, limit:int):
     notifications = []
     for row in result:
         notifications.append(parse_row(row))
-
+    db_conn().commit()
     return notifications
 
 
@@ -32,7 +32,7 @@ def list_incident_notifications(incident_id: str, limit: int):
     notifications = []
     for row in result:
         notifications.append(parse_row(row))
-
+    db_conn().commit()
     return notifications
 
 
@@ -47,6 +47,7 @@ def create_notification(notification: Notification) -> Notification:
             datetime.now()
         ]
     )
+    db_conn().commit()
     return get_notification(notification_id)
 
 

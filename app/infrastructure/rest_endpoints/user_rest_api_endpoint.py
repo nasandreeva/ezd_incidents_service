@@ -1,6 +1,9 @@
 from flask import Flask, request
 import flask
 import app.api.user_api as user_api
+from app.data_structures.notification import Notification
+import app.infrastructure.rest_endpoints.helpers.rest_endpoint_helper as rest_api
+from app.infrastructure.rest_endpoints.adapters.json_api_adapter import JsonApiResponse
 
 app = Flask(__name__)
 
@@ -21,7 +24,8 @@ app = Flask(__name__)
 
 @ app.route('/incidents', methods=['GET'])
 def list_incidents():
-    return flask.json.jsonify(user_api.list_incidents('', '10'))
+    incidents = user_api.list_incidents('', '10')
+    return rest_api.response(200, JsonApiResponse(incidents).render())
 
 
 @ app.route('/incidents', methods=['POST'])
@@ -30,39 +34,51 @@ def register_incident():
                                           request.form.get(
         'user_id'),
         request.form.get('started_at'))
-    return incident.toJSON()
+    return rest_api.response(200, JsonApiResponse(incident).render())
 
 
-@ app.route('/incidents/incident_id/confirmed', methods=['POST'])
-def report_incident_confirmed():
-    pass
+@ app.route('/incidents/<incident_id>/confirmed', methods=['POST'])
+def report_incident_confirmed(incident_id):
+    incident = user_api.report_incident_confirmed(
+        incident_id, request.form.get('user_id'))
+    return rest_api.response(200, JsonApiResponse(incident).render())
+
+@ app.route('/incidents/<incident_id>/not_confirmed', methods=['POST'])
+def report_incident_not_confirmed(incident_id):
+    incident = user_api.report_incident_not_confirmed(
+        incident_id, request.form.get('user_id'))
+    return rest_api.response(200, JsonApiResponse(incident).render())
 
 
-@ app.route('/incidents/incident_id/not_confirmed', methods=['POST'])
-def report_incident_not_confirmed():
-    pass
+@ app.route('/incidents/<incident_id>/recall', methods=['PATCH'])
+def recall_incident(incident_id):
+    incident = user_api.recall_incident(
+        incident_id, request.form.get('user_id'))
+    return rest_api.response(200, JsonApiResponse(incident).render())
 
 
-@ app.route('/incidents/incident_id/recall', methods=['PATCH'])
-def recall_incident():
-    pass
+@ app.route('/incidents/<incident_id>/mark_as_ended', methods=['PATCH'])
+def mark_incident_as_ended(incident_id):
+    user_id = request.form.get('user_id')
+    incident = user_api.mark_incident_as_ended(
+        incident_id, user_id)
+    return rest_api.response(200, JsonApiResponse(incident).render())
 
 
-@ app.route('/incidents/incident_id/mark_as_ended', methods=['PATCH'])
-def mark_incident_as_ended():
-    pass
+@ app.route('/incidents/<incident_id>/resolved', methods=['PATCH'])
+def notify_incident_resolved(incident_id):
+    incident = user_api.notify_incident_resolved(
+        incident_id, request.form.get('user_id'))
+    return rest_api.response(200, JsonApiResponse(incident).render())
 
 
-@ app.route('/incidents/incident_id/resolved', methods=['PATCH'])
-def notify_incident_resolved():
-    pass
+@ app.route('/incidents/<incident_id>/reports', methods=['GET'])
+def list_incident_reports(incident_id):
+    reports = user_api.list_incident_reports(incident_id, '10')
+    return rest_api.response(200, JsonApiResponse(reports).render())
 
 
-@ app.route('/incidents/incident_id/reports', methods=['GET'])
-def list_incident_reports():
-    pass
-
-
-@ app.route('/incidents/incident_id/notifications', methods=['GET'])
-def list_incident_notifications():
-    pass
+@ app.route('/incidents/<incident_id>/notifications', methods=['GET'])
+def list_incident_notifications(incident_id):
+    notifications = user_api.list_incident_notifications(incident_id, '10')
+    return rest_api.response(200, JsonApiResponse(notifications).render())

@@ -5,7 +5,7 @@ import app.persistence.reports as reports_persistence
 import uuid
 import app.tests.fixture.persistence.reports_persistence_test_fixture as reports_persistence_test_fixture
 
- 
+
 def parse_row():
     assert True == False
 
@@ -41,3 +41,12 @@ def test_create_report():
     result = reports_persistence.create_report(fixture)
 
     assert result.user_id == 'user123'
+
+
+def test_get_user_reports_count_for_incident():
+    fixture = reports_persistence_test_fixture.get_user_reports_count_for_incident()
+
+    result = reports_persistence.get_user_reports_count_for_incident(
+        fixture['user_id'], fixture['incident_id'])
+
+    assert result == {'positive_reports': 1, 'negative_reports': 1}

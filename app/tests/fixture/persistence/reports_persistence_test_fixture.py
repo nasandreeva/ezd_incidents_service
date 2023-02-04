@@ -4,7 +4,7 @@ from app.data_structures.report import Report
 import app.persistence.reports as reports_persistence
 import random as random
 
- 
+
 def create_reports(incident_id, quantity):
     for i in range(quantity):
         create_sample_report(incident_id)
@@ -13,6 +13,12 @@ def create_reports(incident_id, quantity):
 def create_sample_report(incident_id):
     report = Report({'incident_id': incident_id, 'user_id': 'user123',
                     'at': datetime.now(), 'confirmed': bool(random.randint(0, 1))})
+    return reports_persistence.create_report(report)
+
+
+def create_sample_report_for_user(incident_id: str, user_id: str, confirmed: bool):
+    report = Report({'incident_id': incident_id, 'user_id': user_id,
+                    'at': datetime.now(), 'confirmed': confirmed})
     return reports_persistence.create_report(report)
 
 
@@ -32,3 +38,14 @@ def list_incident_reports():
     incident_id = str(uuid.uuid4())
     create_reports(incident_id, 10)
     return {'incident_id': incident_id, 'limit': 10}
+
+
+def get_user_reports_count_for_incident():
+    incident_id = str(uuid.uuid4())
+    user_id = str(uuid.uuid4())
+
+    create_sample_report_for_user(incident_id, user_id, True)
+
+    create_sample_report_for_user(incident_id, user_id, False)
+
+    return {'incident_id': incident_id, 'user_id': user_id}

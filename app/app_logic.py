@@ -52,7 +52,7 @@ def mark_incident_as_ended(incident_id: str, user_id: str) -> Incident:
 
 def notify_incident_resolved(incident_id: str, user_id: str) -> Incident:
     notification_logic.create_notification(Notification(
-        dict([('incident_id', incident_id), ('user_id', user_id)])))
+        dict([('incident_id', incident_id), ("user_id", user_id)])))
     incident_logic.increment_resolved_notifications_count(incident_id)
     return incident_logic.get_incident(incident_id)
 

@@ -23,12 +23,14 @@ def list_incidents(from_incident_id: str, limit: int):
     for row in result:
         incidents.append(parse_row(row))
 
+    db_conn().commit()
     return incidents
 
 
 def get_incident(incident_id: str) -> Incident:
     result = db_conn().execute(
         'SELECT * FROM incidents WHERE incident_id = ?', [incident_id]).fetchone()
+
     return parse_row(result)
 
 
@@ -43,7 +45,7 @@ def create_incident(incident: Incident) -> Incident:
             incident.started_at
         ]
     )
-
+    db_conn().commit()
     return get_incident(incident_id)
 
 
@@ -56,19 +58,45 @@ def update_incident(incident_id: str, attrs: dict):
 
     result = db_conn().execute(
         f'UPDATE incidents SET {values_set} WHERE incident_id = ?', [incident_id])
+    db_conn().commit()
     return result
 
 
 def increment_positive_reports_count(incident_id: str):
-    return db_conn().execute(
+    result = db_conn().execute(
         f'UPDATE incidents SET positive_reports_count = positive_reports_count + 1 WHERE incident_id = ?', [incident_id])
+
+    db_conn().commit()
+    return result
 
 
 def increment_negative_reports_count(incident_id: str):
-    return db_conn().execute(
+    result = db_conn().execute(
         f'UPDATE incidents SET negative_reports_count = negative_reports_count + 1 WHERE incident_id = ?', [incident_id])
+    db_conn().commit()
+    return result
 
 
 def increment_resolved_notifications_count(incident_id: str):
-    return db_conn().execute(
+    result = db_conn().execute(
         f'UPDATE incidents SET resolved_notifications_count = resolved_notifications_count + 1 WHERE incident_id = ?', [incident_id])
+    db_conn().commit()
+    return result
+
+
+def end_of_incident(incident_id: str, user_id: str):
+    incident_user_id = db_conn().execute(
+        'GET user_id FROM incidents WHERE incident_id = ?', [incident_id])
+    if incident_user_id == user_id:
+        return update_incident()
+    else:
+        raise Exception('User cant end incident')
+
+
+def cancel_incident(incident_id: str, user_id: str):
+    incident_user_id = db_conn().execute(
+        'GET user_id FROM incidents WHERE incident_id = ?', [incident_id])
+    if incident_user_id == user_id:
+        return update_incident()
+    else:
+        raise Exception('User cant cancel incident')
