@@ -75,4 +75,5 @@ def get_user_reports_count_for_incident(user_id: str, incident_id: str):
         'SELECT COUNT(DISTINCT report_id) as cnt FROM reports WHERE incident_id = ? and user_id = ? and confirmed == True', [incident_id, user_id])
     result_negative = db_conn().execute(
         'SELECT COUNT(DISTINCT report_id) as cnt FROM reports WHERE incident_id = ? and user_id = ? and confirmed == False', [incident_id, user_id])
-    return {'positive_reports': result_positive.fetchall()[0]['cnt'], 'negative_reports': result_negative.fetchall()[0]['cnt']}
+    reports_dict = {'positive_reports': result_positive.fetchall()[0]['cnt'], 'negative_reports': result_negative.fetchall()[0]['cnt']}
+    return reports_dict

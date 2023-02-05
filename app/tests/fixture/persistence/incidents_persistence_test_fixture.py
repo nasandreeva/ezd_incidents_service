@@ -54,3 +54,7 @@ def list_incidents():
 def create_list_sample_incidents(incident_id, quantity):
     for i in range(quantity):
         create_sample_incident()
+
+
+def get_user_id_from_incident():
+    return create_sample_incident()

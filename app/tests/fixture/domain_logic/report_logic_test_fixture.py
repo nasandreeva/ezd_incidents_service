@@ -4,7 +4,7 @@ from app.data_structures.report import Report
 import app.domain_logic.report_logic as report_logic
 import random as random
 
- 
+
 def create_reports(incident_id, quantity):
     for i in range(quantity):
         create_sample_report(incident_id)
@@ -36,3 +36,24 @@ def list_incident_reports():
 
 def check_no_reports_for_incident():
     return create_sample_report_for_random_incident()
+
+
+def create_sample_positive_report(incident_id, user_id):
+    report = Report({'incident_id': incident_id, 'user_id': user_id,
+                    'at': datetime.now(), 'confirmed': True})
+    return report_logic.create_report(report)
+
+
+def create_sample_negative_report(incident_id, user_id):
+    report = Report({'incident_id': incident_id, 'user_id': user_id,
+                    'at': datetime.now(), 'confirmed': False})
+    return report_logic.create_report(report)
+
+
+def check_if_user_can_create_report():
+    incident_id = str(1234)
+    user_id = 'user123'
+    create_sample_negative_report(incident_id, user_id)
+    create_sample_positive_report(incident_id, user_id)
+
+    return dict({'user_id': user_id, 'incident_id': incident_id})

@@ -82,21 +82,3 @@ def increment_resolved_notifications_count(incident_id: str):
         f'UPDATE incidents SET resolved_notifications_count = resolved_notifications_count + 1 WHERE incident_id = ?', [incident_id])
     db_conn().commit()
     return result
-
-
-def end_of_incident(incident_id: str, user_id: str):
-    incident_user_id = db_conn().execute(
-        'GET user_id FROM incidents WHERE incident_id = ?', [incident_id])
-    if incident_user_id == user_id:
-        return update_incident()
-    else:
-        raise Exception('User cant end incident')
-
-
-def cancel_incident(incident_id: str, user_id: str):
-    incident_user_id = db_conn().execute(
-        'GET user_id FROM incidents WHERE incident_id = ?', [incident_id])
-    if incident_user_id == user_id:
-        return update_incident()
-    else:
-        raise Exception('User cant cancel incident')
