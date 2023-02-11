@@ -1,9 +1,10 @@
 from flask import Flask, request
 import flask
 import app.api.user_api as user_api
+from app.core.exceptions import ForbiddenException, InvalidInputException, NotFoundException
 from app.data_structures.notification import Notification
 import app.infrastructure.rest_endpoints.helpers.rest_endpoint_helper as rest_api
-from app.infrastructure.rest_endpoints.adapters.json_api_adapter import JsonApiResponse
+from app.infrastructure.rest_endpoints.adapters.json_api_adapter import JsonApiError, JsonApiResponse
 
 app = Flask(__name__)
 
@@ -24,8 +25,14 @@ app = Flask(__name__)
 
 @ app.route('/incidents', methods=['GET'])
 def list_incidents():
-    incidents = user_api.list_incidents('', '10')
-    return rest_api.response(200, JsonApiResponse(incidents).render())
+    try:
+        raise ForbiddenException("User can not recall incident")
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 @ app.route('/incidents', methods=['POST'])
@@ -42,6 +49,7 @@ def report_incident_confirmed(incident_id):
     incident = user_api.report_incident_confirmed(
         incident_id, request.form.get('user_id'))
     return rest_api.response(200, JsonApiResponse(incident).render())
+
 
 @ app.route('/incidents/<incident_id>/not_confirmed', methods=['POST'])
 def report_incident_not_confirmed(incident_id):

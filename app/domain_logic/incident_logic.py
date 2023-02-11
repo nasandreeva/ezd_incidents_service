@@ -1,4 +1,5 @@
 from datetime import *
+from app.core.exceptions import ForbiddenException, NotFoundException
 
 from app.data_structures.incident import Incident
 import app.persistence.incidents as incident_persistence
@@ -9,7 +10,11 @@ def list_incidents(from_incident_id: str, limit: int) -> list[Incident]:
 
 
 def get_incident(incident_id: str) -> Incident:
-    return incident_persistence.get_incident(incident_id)
+    incident = incident_persistence.get_incident(incident_id)
+    if incident.incident_id:
+        return incident_persistence.get_incident(incident_id)
+    else:
+        raise NotFoundException('Incident not found')
 
 
 def create_incident(incident: Incident):
@@ -22,10 +27,15 @@ def update_incident(incident_id: str, attrs):
 
 def mark_incident_as_recalled(incident_id: str, user_id: str) -> Incident:
     incident = get_incident(incident_id)
-    if incident.user_id == user_id:
-        return incident_persistence.update_incident(incident_id, {'recalled': True})
+    if incident.incident_id:
+        if incident.user_id == user_id:
+            return incident_persistence.update_incident(incident_id, {'recalled': True})
+        else:
+            raise ForbiddenException("User can not recall incident")
     else:
-        raise Exception("User can not recall incident")
+        raise NotFoundException('Incident not found')
+
+
 
 
 def mark_incident_as_ended(incident_id: str, user_id: str) -> Incident:

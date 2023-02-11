@@ -38,6 +38,7 @@ def test_report_incident_confirmed():
 
 
 def test_report_incident_not_confirmed():
+    
     fixture = app_logic_test_fixture.report_incident_not_confirmed()
 
     app_logic.report_incident_not_confirmed(
@@ -109,3 +110,26 @@ def test_list_notifications():
     notifications = app_logic.list_notifications('', 10)
 
     assert len(notifications) == 10
+
+
+def test_check_if_user_can_create_report():
+    fixture = app_logic_test_fixture.check_if_user_can_create_report()
+    result = app_logic.check_if_user_can_create_report(
+        fixture['user_id'], fixture['incident_id'])
+    assert result == False
+
+
+def test_report_incident_not_confirmed():
+    fixture = app_logic_test_fixture.report_incident_not_confirmed()
+    result = app_logic.report_incident_not_confirmed(fixture['user_id'], fixture['incident_id'])
+    updated_incident = app_logic.get_incident(fixture['incident_id'])
+
+    assert updated_incident.negative_reports_count == 1 
+
+
+def test_report_incident_confirmed():
+    fixture = app_logic_test_fixture.report_incident_confirmed()
+    result = app_logic.report_incident_confirmed(fixture['user_id'], fixture['incident_id'])
+    updated_incident = app_logic.get_incident(fixture['incident_id'])
+
+    assert updated_incident.negative_reports_count == 1 

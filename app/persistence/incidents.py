@@ -30,8 +30,10 @@ def list_incidents(from_incident_id: str, limit: int):
 def get_incident(incident_id: str) -> Incident:
     result = db_conn().execute(
         'SELECT * FROM incidents WHERE incident_id = ?', [incident_id]).fetchone()
-
-    return parse_row(result)
+    if result is None:
+        raise Exception('Incident not found')
+    else:   
+        return parse_row(result)
 
 
 def create_incident(incident: Incident) -> Incident:

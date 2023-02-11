@@ -1,5 +1,6 @@
 from ctypes import Union
 from datetime import *
+from app.core.exceptions import ForbiddenException
 
 from app.data_structures.incident import Incident
 from app.data_structures.notification import Notification
@@ -21,18 +22,18 @@ def register_incident(attrs: dict) -> Incident:
     return incident_logic.create_incident(Incident(attrs))
 
 
-def report_incident_confirmed(incident_id: str, user_id: str) -> Incident:
-    report = report_logic.create_report(
-        Report(dict([('incident_id', incident_id), ('user_id', user_id), ('confirmed', True)])))
-    incident_logic.increment_positive_reports_count(incident_id)
-    return incident_logic.get_incident(incident_id)
+# def report_incident_confirmed(incident_id: str, user_id: str) -> Incident:
+#     report = report_logic.create_report(
+#         Report(dict([('incident_id', incident_id), ('user_id', user_id), ('confirmed', True)])))
+#     incident_logic.increment_positive_reports_count(incident_id)
+#     return incident_logic.get_incident(incident_id)
 
 
-def report_incident_not_confirmed(incident_id: str, user_id: str) -> Incident:
-    report = report_logic.create_report(
-        Report(dict([('incident_id', incident_id), ('user_id', user_id), ('confirmed', False)])))
-    incident_logic.increment_negative_reports_count(incident_id)
-    return incident_logic.get_incident(incident_id)
+# def report_incident_not_confirmed(incident_id: str, user_id: str) -> Incident:
+#     report = report_logic.create_report(
+#         Report(dict([('incident_id', incident_id), ('user_id', user_id), ('confirmed', False)])))
+#     incident_logic.increment_negative_reports_count(incident_id)
+#     return incident_logic.get_incident(incident_id)
 
 
 def recall_incident(incident_id: str, user_id: str) -> Incident:
@@ -41,7 +42,7 @@ def recall_incident(incident_id: str, user_id: str) -> Incident:
         incident_logic.mark_incident_as_recalled(incident_id, user_id)
         return incident_logic.get_incident(incident_id)
     else:
-        raise Exception("Incident can not be recalled")
+        raise ForbiddenException("Incident can not be recalled")
 
 
 def mark_incident_as_ended(incident_id: str, user_id: str) -> Incident:
@@ -63,6 +64,26 @@ def list_incident_reports(incident_id: str, limit: int) -> list[Report]:
 
 def list_incident_notifications(incident_id: str, limit: int) -> list[Notification]:
     return notification_logic.list_incident_notifications(incident_id, limit)
+
+
+def check_if_user_can_create_report(user_id: str, incident_id: str):
+    return report_logic.check_if_user_can_create_report(user_id, incident_id)
+
+
+def report_incident_not_confirmed(user_id: str, incident_id: str):
+    result = check_if_user_can_create_report(user_id, incident_id)
+    if result == True:
+        return report_incident_not_confirmed(user_id, incident_id)
+    else:
+        raise ForbiddenException('User cant report')
+
+
+def report_incident_confirmed(user_id: str, incident_id: str):
+    result = check_if_user_can_create_report(user_id, incident_id)
+    if result == True:
+        return report_incident_confirmed(user_id, incident_id)
+    else:
+        raise ForbiddenException('User cant report')
 
 #
 #  Administrative functions

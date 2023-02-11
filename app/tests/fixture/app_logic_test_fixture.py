@@ -62,3 +62,26 @@ def list_reports():
 
 def list_notifications():
     return notification_logic_test_fixture.list_notifications()
+
+
+
+def check_if_user_can_create_report():
+    incident_id = str(1234)
+    user_id = 'user123'
+    report_logic_test_fixture.create_sample_negative_report(incident_id, user_id)
+    report_logic_test_fixture.create_sample_positive_report(incident_id, user_id)
+
+    return dict({'user_id': user_id, 'incident_id': incident_id})
+
+
+def report_incident_not_confirmed():
+    user_id = 'user123'
+    incident_id = str(1234)
+    report_logic_test_fixture.create_sample_negative_report(incident_id, user_id)
+    return dict({'user_id': user_id, 'incident_id': incident_id})
+
+def report_incident_confirmed():
+    user_id = 'user123'
+    incident_id = str(1234)
+    report_logic_test_fixture.create_sample_positive_report(incident_id, user_id)
+    return dict({'user_id': user_id, 'incident_id': incident_id})
