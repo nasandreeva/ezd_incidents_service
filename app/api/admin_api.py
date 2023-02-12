@@ -1,29 +1,49 @@
 import app.app_logic as app_logic
 from datetime import *
+from app.core.exceptions import ForbiddenException, InvalidInputException, NotFoundException
 from app.data_structures.incident import Incident
 from app.data_structures.notification import Notification
 from app.data_structures.report import Report
+from app.core.validators import Validators
 
 
 def list_incidents(cursor_value: str, limit: str = '10') -> list[Incident]:
-    return app_logic.list_incidents(cursor_value, int(limit))
+    if Validators.cursor_value_validator({'(cursor_value': cursor_value}) and Validators.limit_validator({'limit': limit}):
+        return app_logic.list_incidents(cursor_value, int(limit))
+    else:
+        raise InvalidInputException('Invalid input')
 
 
 def get_incident(incident_id: str) -> Incident:
-    return app_logic.get_incident(incident_id)
+    if Validators.incident_id_validator(incident_id):
+        return app_logic.get_incident(incident_id)
+    else:
+        raise NotFoundException('Not Found')
 
 
 def list_incident_reports(incident_id: str, limit: str = '10') -> list[Report]:
-    return app_logic.list_incident_reports(incident_id, int(limit))
+    if Validators.incident_id_validator({'incident_id': incident_id}) and Validators.limit_validator({'limit': limit}):
+        return app_logic.list_incident_reports(incident_id, int(limit))
+    else:
+        raise InvalidInputException('Invalid input')
 
 
 def list_incident_notifications(incident_id: str, limit: str = '10') -> list[Notification]:
-    return app_logic.list_incident_notifications(incident_id, int(limit))
+    if Validators.incident_id_validator({'incident_id': incident_id}) and Validators.limit_validator({'limit': limit}):
+        return app_logic.list_incident_notifications(incident_id, int(limit))
+    else:
+        raise InvalidInputException('Invalid input')
 
 
 def list_reports(from_report_id: str, limit: str = '10'):
-    return app_logic.list_reports(from_report_id, int(limit))
+    if Validators.from_report_id_validator({'from_report_id': from_report_id}) and Validators.limit_validator({'limit': limit}):
+        return app_logic.list_reports(from_report_id, int(limit))
+    else:
+        raise InvalidInputException('Invalid input')
 
 
 def list_notifications(from_notification_id: str, limit: str = '10'):
-    return app_logic.list_notifications(from_notification_id, int(limit))
+    if Validators.from_notification_id_validator({'from_notification_id': from_notification_id}) and Validators.limit_validator({'limit': limit}):
+        return app_logic.list_notifications(from_notification_id, int(limit))
+    else:
+        raise InvalidInputException('Invalid input')

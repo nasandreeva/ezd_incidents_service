@@ -26,7 +26,8 @@ app = Flask(__name__)
 @ app.route('/incidents', methods=['GET'])
 def list_incidents():
     try:
-        raise ForbiddenException("User can not recall incident")
+        incidents = user_api.list_incidents('', '10')
+        return rest_api.response(200, JsonApiResponse(incidents).render())
     except ForbiddenException:
         return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
     except InvalidInputException:
@@ -37,56 +38,113 @@ def list_incidents():
 
 @ app.route('/incidents', methods=['POST'])
 def register_incident():
-    incident = user_api.register_incident(request.form.get('incident_name'),
+    try:
+        incident = user_api.register_incident(request.form.get('incident_name'),
                                           request.form.get(
         'user_id'),
         request.form.get('started_at'))
-    return rest_api.response(200, JsonApiResponse(incident).render())
+        return rest_api.response(200, JsonApiResponse(incident).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 @ app.route('/incidents/<incident_id>/confirmed', methods=['POST'])
 def report_incident_confirmed(incident_id):
-    incident = user_api.report_incident_confirmed(
-        incident_id, request.form.get('user_id'))
-    return rest_api.response(200, JsonApiResponse(incident).render())
+    try:
+        incident = user_api.report_incident_confirmed(
+            incident_id, request.form.get('user_id'))
+        return rest_api.response(200, JsonApiResponse(incident).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 @ app.route('/incidents/<incident_id>/not_confirmed', methods=['POST'])
 def report_incident_not_confirmed(incident_id):
-    incident = user_api.report_incident_not_confirmed(
-        incident_id, request.form.get('user_id'))
-    return rest_api.response(200, JsonApiResponse(incident).render())
+    try:
+        incident = user_api.report_incident_not_confirmed(
+            incident_id, request.form.get('user_id'))
+        return rest_api.response(200, JsonApiResponse(incident).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 @ app.route('/incidents/<incident_id>/recall', methods=['PATCH'])
 def recall_incident(incident_id):
-    incident = user_api.recall_incident(
-        incident_id, request.form.get('user_id'))
-    return rest_api.response(200, JsonApiResponse(incident).render())
+    try:
+        incident = user_api.recall_incident(
+            incident_id, request.form.get('user_id'))
+        return rest_api.response(200, JsonApiResponse(incident).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
+
 
 
 @ app.route('/incidents/<incident_id>/mark_as_ended', methods=['PATCH'])
 def mark_incident_as_ended(incident_id):
-    user_id = request.form.get('user_id')
-    incident = user_api.mark_incident_as_ended(
-        incident_id, user_id)
-    return rest_api.response(200, JsonApiResponse(incident).render())
+    try:
+        user_id = request.form.get('user_id')
+        incident = user_api.mark_incident_as_ended(
+            incident_id, user_id)
+        return rest_api.response(200, JsonApiResponse(incident).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 @ app.route('/incidents/<incident_id>/resolved', methods=['PATCH'])
 def notify_incident_resolved(incident_id):
-    incident = user_api.notify_incident_resolved(
-        incident_id, request.form.get('user_id'))
-    return rest_api.response(200, JsonApiResponse(incident).render())
+    try:
+        incident = user_api.notify_incident_resolved(
+            incident_id, request.form.get('user_id'))
+        return rest_api.response(200, JsonApiResponse(incident).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 @ app.route('/incidents/<incident_id>/reports', methods=['GET'])
 def list_incident_reports(incident_id):
-    reports = user_api.list_incident_reports(incident_id, '10')
-    return rest_api.response(200, JsonApiResponse(reports).render())
+    try:
+        reports = user_api.list_incident_reports(incident_id, '10')
+        return rest_api.response(200, JsonApiResponse(reports).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 @ app.route('/incidents/<incident_id>/notifications', methods=['GET'])
 def list_incident_notifications(incident_id):
-    notifications = user_api.list_incident_notifications(incident_id, '10')
-    return rest_api.response(200, JsonApiResponse(notifications).render())
+    try:
+        notifications = user_api.list_incident_notifications(incident_id, '10')
+        return rest_api.response(200, JsonApiResponse(notifications).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())

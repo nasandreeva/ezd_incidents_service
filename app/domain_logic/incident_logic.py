@@ -10,11 +10,8 @@ def list_incidents(from_incident_id: str, limit: int) -> list[Incident]:
 
 
 def get_incident(incident_id: str) -> Incident:
-    incident = incident_persistence.get_incident(incident_id)
-    if incident.incident_id:
-        return incident_persistence.get_incident(incident_id)
-    else:
-        raise NotFoundException('Incident not found')
+    ensure_incident_exists(incident_id)
+    return incident_persistence.get_incident(incident_id)
 
 
 def create_incident(incident: Incident):
@@ -22,37 +19,44 @@ def create_incident(incident: Incident):
 
 
 def update_incident(incident_id: str, attrs):
+    ensure_incident_exists(incident_id)
     return incident_persistence.update_incident(incident_id, attrs)
 
 
 def mark_incident_as_recalled(incident_id: str, user_id: str) -> Incident:
     incident = get_incident(incident_id)
-    if incident.incident_id:
-        if incident.user_id == user_id:
-            return incident_persistence.update_incident(incident_id, {'recalled': True})
-        else:
-            raise ForbiddenException("User can not recall incident")
+    ensure_incident_exists(incident_id)
+    if incident.user_id == user_id:
+        return incident_persistence.update_incident(incident_id, {'recalled': True})
     else:
-        raise NotFoundException('Incident not found')
-
-
+        raise ForbiddenException("User can not recall incident")
 
 
 def mark_incident_as_ended(incident_id: str, user_id: str) -> Incident:
     incident = get_incident(incident_id)
+    ensure_incident_exists(incident_id)
     if incident.user_id == user_id:
         return incident_persistence.update_incident(incident_id, {'ended_at': datetime.now()})
     else:
-        raise Exception("User can not end incident")
+        raise ForbiddenException("User can not end incident")
 
 
-def increment_positive_reports_count(positive_reports_count: int):
-    return incident_persistence.increment_positive_reports_count(positive_reports_count)
+def increment_positive_reports_count(incident_id: str):
+    ensure_incident_exists(incident_id)
+    return incident_persistence.increment_positive_reports_count(incident_id)
 
 
-def increment_negative_reports_count(negative_reports_count: int):
-    return incident_persistence.increment_negative_reports_count(negative_reports_count)
+def increment_negative_reports_count(incident_id: str):
+    ensure_incident_exists(incident_id)
+    return incident_persistence.increment_negative_reports_count(incident_id)
 
 
 def increment_resolved_notifications_count(incident_id: str):
+    ensure_incident_exists(incident_id)
     return incident_persistence.increment_resolved_notifications_count(incident_id)
+
+
+def ensure_incident_exists(incident_id: str):
+    incident = incident_persistence.get_incident(incident_id)
+    if incident is None:
+        raise NotFoundException('Incident not found')

@@ -1,44 +1,87 @@
 from flask import Flask, request
 import flask
 import app.api.admin_api as admin_api
+from app.core.exceptions import ForbiddenException, InvalidInputException, NotFoundException
 import app.infrastructure.rest_endpoints.helpers.rest_endpoint_helper as rest_api
-from app.infrastructure.rest_endpoints.adapters.json_api_adapter import JsonApiResponse
+from app.infrastructure.rest_endpoints.adapters.json_api_adapter import JsonApiError, JsonApiResponse
 
 app = Flask(__name__)
 
 
 @ app.route('/incidents', methods=['GET'])
 def list_incidents():
-    incidents = admin_api.list_incidents('', '10')
-    return rest_api.response(200, JsonApiResponse(incidents).render())
+    try:
+        incidents = admin_api.list_incidents('', '10')
+        return rest_api.response(200, JsonApiResponse(incidents).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 @ app.route('/incidents/<incident_id>', methods=['GET'])
 def get_incident(incident_id):
-    incident = admin_api.get_incident(incident_id)
-    return rest_api.response(200, JsonApiResponse(incident).render())
+    try:
+        incident = admin_api.get_incident(incident_id)
+        return rest_api.response(200, JsonApiResponse(incident).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 @ app.route('/incidents/<incident_id>/reports', methods=['GET'])
 def list_incident_reports(incident_id):
-    reports = admin_api.list_incident_reports(incident_id, '1000')
-    return rest_api.response(200, JsonApiResponse(reports).render())
+    try:
+        reports = admin_api.list_incident_reports(incident_id, '1000')
+        return rest_api.response(200, JsonApiResponse(reports).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 @ app.route('/incidents/<incident_id>/notifications', methods=['GET'])
 def list_incident_notifications(incident_id):
-    notifications = admin_api.list_incident_notifications(incident_id, '1000')
-    return rest_api.response(200, JsonApiResponse(notifications).render())
+    try:
+        notifications = admin_api.list_incident_notifications(incident_id, '1000')
+        return rest_api.response(200, JsonApiResponse(notifications).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 
 @ app.route('/reports', methods=['GET'])
 def list_reports():
-    reports = admin_api.list_reports('', '10')
-    return rest_api.response(200, JsonApiResponse(reports).render())
+    try:
+        reports = admin_api.list_reports('', '10')
+        return rest_api.response(200, JsonApiResponse(reports).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())
 
 
 @ app.route('/notifications', methods=['GET'])
 def list_notifications():
-    notifications = admin_api.list_notifications('', '10')
-    return rest_api.response(200, JsonApiResponse(notifications).render())
+    try:
+        notifications = admin_api.list_notifications('', '10')
+        return rest_api.response(200, JsonApiResponse(notifications).render())
+    except ForbiddenException:
+        return rest_api.response(403, JsonApiError(403, 'Forbidden').render())
+    except InvalidInputException:
+        return rest_api.response(422, JsonApiError(422, 'Forbidden').render())
+    except NotFoundException:
+        return rest_api.response(404, JsonApiError(404, 'Forbidden').render())

@@ -15,6 +15,7 @@ def list_incidents(cursor_value: int, limit: int = 10) -> list[Incident]:
 
 
 def get_incident(incident_id: str) -> Incident:
+    incident_logic.ensure_incident_exists(incident_id)
     return incident_logic.get_incident(incident_id)
 
 
@@ -37,6 +38,8 @@ def register_incident(attrs: dict) -> Incident:
 
 
 def recall_incident(incident_id: str, user_id: str) -> Incident:
+    incident_logic.ensure_incident_exists(incident_id)
+
     incident = incident_logic.get_incident(incident_id)
     if incident.positive_reports_count == 0 and incident.negative_reports_count == 0:
         incident_logic.mark_incident_as_recalled(incident_id, user_id)
@@ -46,12 +49,13 @@ def recall_incident(incident_id: str, user_id: str) -> Incident:
 
 
 def mark_incident_as_ended(incident_id: str, user_id: str) -> Incident:
-    incident = incident_logic.get_incident(incident_id)
+    incident_logic.ensure_incident_exists(incident_id)
     incident_logic.mark_incident_as_ended(incident_id, user_id)
     return incident_logic.get_incident(incident_id)
 
 
 def notify_incident_resolved(incident_id: str, user_id: str) -> Incident:
+    incident_logic.ensure_incident_exists(incident_id)
     notification_logic.create_notification(Notification(
         dict([('incident_id', incident_id), ("user_id", user_id)])))
     incident_logic.increment_resolved_notifications_count(incident_id)
@@ -59,29 +63,25 @@ def notify_incident_resolved(incident_id: str, user_id: str) -> Incident:
 
 
 def list_incident_reports(incident_id: str, limit: int) -> list[Report]:
+    incident_logic.ensure_incident_exists(incident_id)
     return report_logic.list_incident_reports(incident_id, limit)
 
 
 def list_incident_notifications(incident_id: str, limit: int) -> list[Notification]:
+    incident_logic.ensure_incident_exists(incident_id)
     return notification_logic.list_incident_notifications(incident_id, limit)
 
 
 def check_if_user_can_create_report(user_id: str, incident_id: str):
+    incident_logic.ensure_incident_exists(incident_id)
     return report_logic.check_if_user_can_create_report(user_id, incident_id)
 
 
-def report_incident_not_confirmed(user_id: str, incident_id: str):
+def report_incident_confirmed(incident_id: str, user_id: str):
+    incident_logic.ensure_incident_exists(incident_id)
     result = check_if_user_can_create_report(user_id, incident_id)
     if result == True:
-        return report_incident_not_confirmed(user_id, incident_id)
-    else:
-        raise ForbiddenException('User cant report')
-
-
-def report_incident_confirmed(user_id: str, incident_id: str):
-    result = check_if_user_can_create_report(user_id, incident_id)
-    if result == True:
-        return report_incident_confirmed(user_id, incident_id)
+        return report_logic.create_report(Report({'incident_id': incident_id, 'user_id': user_id}))
     else:
         raise ForbiddenException('User cant report')
 

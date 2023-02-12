@@ -54,4 +54,7 @@ def create_notification(notification: Notification) -> Notification:
 def get_notification(notification_id: str) -> Notification:
     result = db_conn().execute(
         'SELECT * FROM notifications WHERE notification_id = ?', [notification_id]).fetchone()
-    return parse_row(result)
+    if result is None:
+        return None
+    else:   
+        return parse_row(result)

@@ -31,7 +31,7 @@ def get_incident(incident_id: str) -> Incident:
     result = db_conn().execute(
         'SELECT * FROM incidents WHERE incident_id = ?', [incident_id]).fetchone()
     if result is None:
-        raise Exception('Incident not found')
+        return None
     else:   
         return parse_row(result)
 
